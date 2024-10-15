@@ -1,4 +1,4 @@
-// Array of quote objects, each with a text and a category
+// Array of quote objects, each containing 'text' and 'category' properties
 let quotes = [
     { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", category: "Inspiration" },
     { text: "Life is what happens when you're busy making other plans.", category: "Life" },
@@ -10,6 +10,8 @@ let quotes = [
   function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
+  
+    // Display the quote text and category in the DOM
     const quoteDisplay = document.getElementById("quoteDisplay");
     quoteDisplay.innerHTML = `"${randomQuote.text}"<br><small>— Category: ${randomQuote.category}</small>`;
   }
@@ -19,11 +21,12 @@ let quotes = [
     const newQuoteText = document.getElementById("newQuoteText").value;
     const newQuoteCategory = document.getElementById("newQuoteCategory").value;
   
-    // Ensure both fields are filled before adding
+    // Ensure both fields are filled before adding the new quote
     if (newQuoteText.trim() !== "" && newQuoteCategory.trim() !== "") {
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
       alert("New quote added successfully!");
-      // Clear input fields after adding the quote
+  
+      // Clear input fields after adding the new quote
       document.getElementById("newQuoteText").value = "";
       document.getElementById("newQuoteCategory").value = "";
     } else {
