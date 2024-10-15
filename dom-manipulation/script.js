@@ -40,40 +40,43 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
     }
   }
   
-  // Function to create and append the form dynamically to add new quotes
-  function createAddQuoteForm() {
-    const formContainer = document.createElement("div");
+  // Function to export quotes as a JSON file
+  function exportToJsonFile() {
+    const dataStr = JSON.stringify(quotes, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.download = 'quotes.json';
+    downloadLink.click();
+    URL.revokeObjectURL(url); // Clean up URL object
+  }
   
-    // Create input fields for the new quote and category
-    const inputQuote = document.createElement("input");
-    inputQuote.setAttribute("id", "newQuoteText");
-    inputQuote.setAttribute("type", "text");
-    inputQuote.setAttribute("placeholder", "Enter a new quote");
+  // Add event listener for the Export Quotes button
+  document.getElementById("exportQuotes").addEventListener("click", exportToJsonFile);
   
-    const inputCategory = document.createElement("input");
-    inputCategory.setAttribute("id", "newQuoteCategory");
-    inputCategory.setAttribute("type", "text");
-    inputCategory.setAttribute("placeholder", "Enter quote category");
-  
-    // Create the add quote button
-    const addQuoteButton = document.createElement("button");
-    addQuoteButton.textContent = "Add Quote";
-    addQuoteButton.addEventListener("click", addQuote);
-  
-    // Append the input fields and button to the form container
-    formContainer.appendChild(inputQuote);
-    formContainer.appendChild(inputCategory);
-    formContainer.appendChild(addQuoteButton);
-  
-    // Append the form container to the body or a specific div
-    document.body.appendChild(formContainer);
+  // Function to import quotes from a JSON file
+  function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+      try {
+        const importedQuotes = JSON.parse(event.target.result);
+        if (Array.isArray(importedQuotes)) {
+          quotes.push(...importedQuotes);
+          saveQuotes(); // Save the updated quotes to localStorage
+          alert('Quotes imported successfully!');
+        } else {
+          alert('Invalid JSON format.');
+        }
+      } catch (error) {
+        alert('Error reading file: ' + error.message);
+      }
+    };
+    fileReader.readAsText(event.target.files[0]);
   }
   
   // Event listener for the "Show New Quote" button
   document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-  
-  // Call the createAddQuoteForm function to render the form on page load
-  createAddQuoteForm();
   
   // Load the last viewed quote from sessionStorage (if available)
   window.onload = function () {
